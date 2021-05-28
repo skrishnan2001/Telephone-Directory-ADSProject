@@ -3,6 +3,7 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <bits/stdc++.h>
 #include "Telephone_Directory.h"
 using namespace std;
 
@@ -267,6 +268,81 @@ void Phone_Directory :: Partial_Matches(string phone_num)
 	splay(Final->phone_num, root);
 }
 
+void Phone_Directory :: Partial_Matches_Name(string name)
+{
+	vector<node *> Partial_Matched_name;
+	stack<node *> TEMP_Stk;
+	if(Is_Empty())
+	{
+		cout << "\nThe phone directory is empty !!\n";
+		return;
+	}
+	TEMP_Stk.push(root);
+	int count_keys = 1;
+	while(TEMP_Stk.size() != 0)
+	{
+		node *temp = TEMP_Stk.top();
+		TEMP_Stk.pop();
+		int m = temp->name.size(), n = name.size();
+		int LCS[m + 1][n + 1];
+		int result = 0;
+		for(int i = 0; i <= m; i++)
+		{
+			for(int j = 0; j <= n; j++)
+			{
+				if(i == 0 || j == 0)
+				{
+					LCS[i][j] = 0;
+					continue;
+				}
+				char L = temp->name[i - 1], R = name[j - 1];
+				
+				
+				
+				if(L == R)
+				{
+					LCS[i][j] = LCS[i - 1][j - 1] + 1;
+					//result = max(result, LCS[i][j]);
+				}
+				
+				else
+					LCS[i][j] = max(LCS[i - 1][j], LCS[i][j - 1]);
+			}
+		}
+		if(LCS[m][n] == n)
+		{
+			cout << count_keys << "." << temp->name << endl;
+			count_keys++;
+			Partial_Matched_name.push_back(temp);
+		}
+		
+		if(temp->right != nullRecord)
+			TEMP_Stk.push(temp->right);
+		
+		if(temp->left != nullRecord)
+			TEMP_Stk.push(temp->left);
+	}
+	if(Partial_Matched_name.size() == 0)
+	{
+		cout << "\nNo partial matches found !!" << endl;
+		return;
+	}
+	int choice;
+	cout << endl << "Enter your choice : ";
+	cin >> choice;
+	if(choice < 1 || choice > Partial_Matched_name.size())
+	{
+		cout << "\nInvalid choice !!\n";
+		return;
+	}
+	node *Final = Partial_Matched_name[choice - 1];
+	cout << endl;
+	cout << "Name : " << Final->name << endl;
+	cout << "Phone number : " << Final->phone_num << endl;
+	Final->count++;
+	splay(Final->phone_num, root);
+}
+
 void Phone_Directory :: Frequent_keys()
 {
 	vector<node *> Frequents;
@@ -319,4 +395,64 @@ void Phone_Directory :: sort(vector<node *> &Frequents)
 		i--;
 	}
 	Frequents[i + 1] = last;
+}
+
+bool Phone_Directory :: name_found(node * n, const string & str)
+{
+    if(n == nullRecord)
+    return false;
+    
+    string t = n->name;
+    transform(t.begin(),t.end(),t.begin(),::tolower);
+    if(t.compare(str) == 0)
+    return true;
+
+    return name_found(n->left,str) || name_found(n->right,str);
+}
+
+bool Phone_Directory :: name_found( string & n)
+{
+    transform(n.begin(),n.end(),n.begin(),::tolower);
+    
+    if(root == nullRecord)
+    return false;
+    
+    /*string t = root->name;
+    transform(t.begin(),t.end(),t.begin(),::tolower);
+ 
+    if(t.compare(n)==0)
+    return true;
+*/
+    //return name_found(root->left,n) || name_found(root->right,n);
+     return name_found(root,n);
+}
+
+void Phone_Directory :: search_by_name(node * n, const string & search_string)
+{
+    if(n==nullRecord)
+    return;
+    
+    string s = n->name;
+    transform(s.begin(),s.end(),s.begin(),::tolower);
+    
+    if(s.compare(search_string) == 0)
+    {
+    cout << n->name << "\t\t" << n->phone_num << endl;
+	n->count++;
+    }
+
+    search_by_name(n->left,search_string);
+    search_by_name(n->right,search_string);
+}
+
+void Phone_Directory :: search_by_name(const string & search_name)
+{
+   /*string t = root->name;
+   transform(t.begin(),t.end(),t.begin(),::tolower);
+   if(t.compare(search_name) == 0)
+   cout << root->name << "\t\t" << root->phone_num << endl;
+   */
+   //search_by_name(root->left,search_name);
+   //search_by_name(root->right,search_name); 
+   search_by_name(root,search_name);  
 }

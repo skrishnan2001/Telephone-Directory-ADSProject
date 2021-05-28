@@ -19,7 +19,8 @@ int main()
 		cout << "4. Search by phone number\n";
 		cout << "5. Partial matches\n";
 		cout << "6. Frequently searched phone number\n";
-		cout << "7. Exit\n\n";
+		cout << "7. Search By Name\n";
+        cout << "8. Exit\n\n";
 		cout << "Enter your choice : ";
 		cin >> ch;
 		switch(ch)
@@ -65,18 +66,47 @@ int main()
 			
 			case 5:
 				{
-					string phone_num;
-					phone_num = accept_phone_num();
-					directory.Partial_Matches(phone_num);
+					string partial_detail;
+					int f=0;
+					cout << endl << "Enter the phone number/name : ";
+					getline(cin >> ws, partial_detail);
+					for(int i=0;i<partial_detail.length();i++){
+						if (( partial_detail[i]>= 65 && partial_detail[i] <= 90)
+        						|| (partial_detail[i] >= 97 && partial_detail[i] <= 122)){
+									f=1;
+									break;
+								}
+					}
+					if(f==0)	directory.Partial_Matches(partial_detail);
+					if(f==1)	directory.Partial_Matches_Name(partial_detail);
 					break;
 				}	
 			
 			case 6:
 				directory.Frequent_keys();
 				break;
-		}
 		
-	} while(ch != 7);
+            case 7:
+                string search_name;
+                search_name = accept_name();
+                
+                if(!directory.name_found(search_name))
+                cout << "\nThere are no records with name " << search_name << endl;
+                
+                else
+                {
+                    cout << "\n--------------------------------------------\n";
+	                cout << "Name\t\t\tPhone number" << endl;
+	                cout << "--------------------------------------------\n";
+	                directory.search_by_name(search_name);
+                    
+                    cout << "--------------------------------------------\n";
+                }
+
+				break;
+        }
+		
+	} while(ch != 8);
 	return 0;
 }
 
@@ -95,5 +125,3 @@ string accept_name()
 	getline(cin >> ws, name);
 	return name;
 }
-
-

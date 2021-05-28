@@ -35,6 +35,11 @@ class Phone_Directory
 		void rotate_with_right_child(node *&);
 		void search_key(string);
 		void Partial_Matches(string);
+		void Partial_Matches_Name(string);
 		void Frequent_keys();
 		void sort(vector<node *>&);
+        void search_by_name(const string &);
+        bool name_found( string &);
+        void search_by_name(node * n, const string &);
+        bool name_found(node * n, const string &);
 };
