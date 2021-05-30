@@ -112,11 +112,10 @@ int main()
 			directory.Frequent_keys();
 			break;
 		}
-		default:
-			cout<<"\nEnter the correct choice!!!\n";
 		}
 
 	} while (ch != 8);
+	cout << "\nExiting....Thank you!\n";
 	return 0;
 }
 
